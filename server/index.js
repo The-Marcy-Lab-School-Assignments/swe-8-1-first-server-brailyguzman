@@ -1,11 +1,14 @@
 const express = require('express');
+const path = require('path');
+
+const clientPath = path.join(__dirname, '../app/dist');
+const serverStatic = express.static(clientPath);
 
 const app = express();
 const router = express.Router();
 
 const logRoutes = (req, res, next) => {
   console.log(`${req.method}: ${req.url} - ${new Date().toLocaleTimeString()}`);
-
   next();
 };
 
@@ -22,10 +25,15 @@ const pictureController = (_req, res) => {
   });
 };
 
-const rollDieController = (_req, res) => {
-  const roll = Math.floor(Math.random() * 6) + 1;
+const rollDieController = (req, res) => {
+  const { quantity } = req.query;
 
-  res.json([roll]);
+  const rolls = Array.from(
+    { length: quantity || 1 },
+    () => Math.floor(Math.random() * 6) + 1
+  );
+
+  res.json(rolls);
 };
 
 // Endpoints
@@ -33,6 +41,8 @@ router.get('/joke', jokeController);
 router.get('/picture', pictureController);
 router.get('/rollDie', rollDieController);
 
+// Serve static
+app.use(serverStatic);
 // Use the logRoutes middleware for all endpoints
 app.use(logRoutes);
 // Use the router on the /api route
