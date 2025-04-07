@@ -28,6 +28,10 @@ const pictureController = (_req, res) => {
 const rollDieController = (req, res) => {
   const { quantity } = req.query;
 
+  if (quantity && quantity <= 0) {
+    return res.status(400).json({ error: 'Invalid quantity' });
+  }
+
   const rolls = Array.from(
     { length: quantity || 1 },
     () => Math.floor(Math.random() * 6) + 1
