@@ -37,7 +37,7 @@ const rollDieController = (req, res) => {
     () => Math.floor(Math.random() * 6) + 1
   );
 
-  res.json(rolls);
+  res.json({ rolls });
 };
 
 // Endpoints
